@@ -11,5 +11,6 @@
 开发工具：IntelliJ IDEA Community 2023.2<br />
 JDK版本：20.0.2<br />
 
-
+#### Tips
+由默认用户名，在UserDate这个类里，登录是和UserData这个类里面的用户名和密码进行对比的，可以进行修改。
 
