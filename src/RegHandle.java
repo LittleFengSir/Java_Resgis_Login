@@ -3,7 +3,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 public class RegHandle {
-    private RegisterView registerView;
+    private final RegisterView registerView;
+    private final PasswordHasher passwordHasher = new PasswordHasher();
     public RegHandle(RegisterView registerView){
         this.registerView = registerView;
     }
@@ -34,8 +35,11 @@ public class RegHandle {
                 errorFlag = true;
             }
             if(!errorFlag){
+                byte[] salt = PasswordHasher.generateSalt();
+                String hashedPassword = passwordHasher.hashPassword(pwdString,salt);
                 UserData.userName = userNameInput;
-                UserData.userPWd = pwdString;
+                UserData.userPWd = hashedPassword;
+                UserData.salt = salt;
                 JOptionPane.showMessageDialog(null, "注册成功！");
                 registerView.dispose();
             }

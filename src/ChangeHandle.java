@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 public class ChangeHandle {
     private final ChangeView changeView;
+    private final PasswordHasher passwordHasher = new PasswordHasher();
     public ChangeHandle(ChangeView changeView){
         this.changeView = changeView;
     }
@@ -13,7 +14,8 @@ public class ChangeHandle {
         boolean errorFlag = false;
         @Override
         public void actionPerformed(ActionEvent e) {
-                 if (!changeView.getUserNameField().getText().equals(UserData.userName) || !new String(changeView.getOriginalPWDField().getPassword()).equals(UserData.userPWd)){
+            boolean passwordMatch = passwordHasher.verifyPassword(new String(changeView.getOriginalPWDField().getPassword()),UserData.salt,UserData.userPWd);
+                 if (!changeView.getUserNameField().getText().equals(UserData.userName) || !passwordMatch){
                      JOptionPane.showMessageDialog(null, "用户名或密码错误", "ERROR", JOptionPane.ERROR_MESSAGE);
                      errorFlag = true;
                  } else if (!Arrays.equals(changeView.getNewPWDField().getPassword(), changeView.getNewPWDField1().getPassword())) {
@@ -25,7 +27,9 @@ public class ChangeHandle {
                  }
                  if (!errorFlag){
                     UserData.userName = changeView.getUserNameField().getText();
-                    UserData.userPWd = new String(changeView.getNewPWDField().getPassword());
+                    byte[] salt = passwordHasher.generateSalt();
+                    UserData.userPWd = passwordHasher.hashPassword(new String(changeView.getNewPWDField().getPassword()),salt);
+                    UserData.salt = salt;
                      JOptionPane.showMessageDialog(null, "修改成功！");
                      changeView.dispose();
                      new LoginView();

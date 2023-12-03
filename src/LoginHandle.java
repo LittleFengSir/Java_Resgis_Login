@@ -32,9 +32,9 @@ public class LoginHandle extends JFrame{
         public void actionPerformed(ActionEvent e) {
             boolean errorFlag = false;
             String userNameInput = loginView.getUserNameJTextField().getText();
-            char[] pwdInput = loginView.getPwdField().getPassword();
-            String pwdString = new String(pwdInput);
-            if(!userNameInput.equals(UserData.userName) || !pwdString.equals(UserData.userPWd)){
+            String pwdString = new String(loginView.getPwdField().getPassword());
+            boolean passwordMatch = PasswordHasher.verifyPassword(pwdString,UserData.salt,UserData.userPWd);
+            if(!userNameInput.equals(UserData.userName) || !passwordMatch){
                 JOptionPane.showMessageDialog(null, "用户名或密码错误", "ERROR", JOptionPane.ERROR_MESSAGE);
                 errorFlag = true;
             }
